@@ -21,7 +21,7 @@
 </head>
 <body class="bg-grey-light">
     <div id="app">
-        <nav class="bg-white">
+        <nav class="bg-white section">
             <div class="container mx-auto">
                 <div class="flex justify-between items-center py-2">
                     <h1>
@@ -68,7 +68,7 @@
             </div>
         </nav>
 
-        <main class="container mx-auto py-4">
+        <main class="container mx-auto py-4 section">
             @yield('content')
         </main>
     </div>
