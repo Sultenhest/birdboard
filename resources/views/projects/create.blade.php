@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Create a Project</h1>
+@extends('layouts.app')
+
+@section('content')
     <form action="/projects" method="POST">
         @csrf
+    
+        <h1>Create a Project</h1>
+
         <div class="field">
             <label for="title" class="label">Title</label>
 
@@ -26,7 +24,7 @@
 
         <div class="field">
             <button type="submit" class="button is-link">Create Project</button>
+            <a href="/projects">Cancel</a>
         </div>
     </form>
-</body>
-</html>
+@endsection
