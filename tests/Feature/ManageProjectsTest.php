@@ -11,24 +11,17 @@ class ProjectsTest extends TestCase
     use WithFaker, RefreshDatabase;
 
     /** @test */
-    public function guests_cannot_create_projects()
-    {
-        $attributes = factory('App\Project')->raw();
-
-        $this->post('/projects', $attributes)->assertRedirect('login');
-    }
-
-    /** @test */
-    public function guests_cannot_view_projects()
-    {
-        $this->get('/projects')->assertRedirect('login');
-    }
-
-    /** @test */
-    public function guests_cannot_view_a_single_project()
+    public function guests_cannot_manage_projects()
     {
         $project = factory('App\Project')->create();
 
+        //guests_cannot_create_projects
+        $this->post('/projects', $project->toArray())->assertRedirect('login');
+        //guests_cannot_view_projects
+        $this->get('/projects')->assertRedirect('login');
+        //guests_cannot_view_the_create_page
+        $this->get('/projects/create')->assertRedirect('login');
+        //guests_cannot_view_a_single_project
         $this->get($project->path())->assertRedirect('login');
     }
 
@@ -38,6 +31,8 @@ class ProjectsTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->actingAs(factory('App\User')->create());
+
+        $this->get('/projects/create')->assertOk();
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -70,7 +65,7 @@ class ProjectsTest extends TestCase
 
         $project = factory('App\Project')->create();
 
-        $this->get($project->path())->assertStatus(403);
+        $this->get($project->path())->assertForbidden();
     }
 
     /** @test */
