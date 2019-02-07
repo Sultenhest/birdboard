@@ -35,11 +35,12 @@ class ProjectsTest extends TestCase
         $this->get('/projects/create')->assertOk();
 
         $attributes = [
+            'id' => 1,
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph
         ];
 
-        $this->post('/projects', $attributes)->assertRedirect('/projects');
+        $this->post('/projects', $attributes)->assertRedirect('/projects/' . 1);
 
         $this->assertDatabaseHas('projects', $attributes);
 
