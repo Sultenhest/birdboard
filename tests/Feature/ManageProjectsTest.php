@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Project;
 use Tests\TestCase;
+use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -29,7 +30,6 @@ class ProjectsTest extends TestCase
     /** @test */
     public function a_user_can_create_a_project()
     {
-        $this->withoutExceptionHandling();
         $this->signIn();
 
         $this->get('/projects/create')->assertOk();
@@ -46,9 +46,6 @@ class ProjectsTest extends TestCase
 
         $response->assertRedirect($project->path());
 
-        $this->assertDatabaseHas('projects', $attributes);
-
-        //$this->get('/projects')->assertSee($attributes['title']);
         $this->get($project->path())
            ->assertSee($attributes['title'])
            ->assertSee($attributes['description'])
@@ -58,17 +55,13 @@ class ProjectsTest extends TestCase
     /** @test */
     public function a_user_can_update_a_project()
     {
-        $this->signIn();
+        $project = ProjectFactory::create();
 
-        $this->withoutExceptionHandling();
+        $this->actingAs($project->owner)
+            ->patch($project->path(), $attributes = ['notes' => 'Changed'])
+            ->assertRedirect($project->path());
 
-        $project = factory('App\Project')->create(['owner_id' => auth()->id()]);
-
-        $this->patch($project->path(), [
-            'notes' => 'Changed'
-        ])->assertRedirect($project->path());
-
-        $this->assertDatabaseHas('projects', ['notes' => 'Changed']);
+        $this->assertDatabaseHas('projects', $attributes);
     }
 
     /** @test */
@@ -76,11 +69,12 @@ class ProjectsTest extends TestCase
     {
         $this->signIn();
 
-        $this->withoutExceptionHandling();
+        $project = ProjectFactory::create();
 
-        $project = factory('App\Project')->create(['owner_id' => auth()->id()]);
-
-        $this->get($project->path())->assertSee($project->title)->assertSee($project->description);
+        $this->actingAs($project->owner)
+            ->get($project->path())
+            ->assertSee($project->title)
+            ->assertSee($project->description);
     }
 
     /** @test */
