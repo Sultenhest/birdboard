@@ -44,6 +44,16 @@
                         @csrf
                         <textarea class="card w-full mb-4" name="notes" style="min-height:200px;">{{ $project->notes }}</textarea>
                         <button type="submit" class="button">Save</button>
+
+                        @if( $errors->any() )
+                            <div class="field mt-6">
+                                <ul>
+                                    @foreach( $errors->all() as $error )
+                                        <li class="text-sm text-red">{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>
